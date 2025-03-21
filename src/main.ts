@@ -17,37 +17,6 @@ function ensureDirectoryExists(dirPath: string) {
   }
 }
 
-// Function to get Roblox game name by ID
-async function getRobloxGameName(placeId: string): Promise<string | null> {
-  return new Promise((resolve, reject) => {
-    const url = `https://api.roblox.com/marketplace/productinfo?assetId=${placeId}`;
-    https.get(url, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        try {
-          const parsedData = JSON.parse(data);
-          if (parsedData && parsedData.Name) {
-            resolve(parsedData.Name);
-          } else {
-            resolve(null);
-          }
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-          reject(error);
-        }
-      });
-    }).on('error', (error) => {
-      console.error('Error fetching game name:', error);
-      reject(error);
-    });
-  });
-}
-
 // POST route for /execute
 app.post('/execute', (req: Request, res: Response): void => {
   const { playerName, placeId, content } = req.body;
@@ -96,8 +65,9 @@ app.get('/get_script', (req: Request, res: Response): void => {
 });
 
 // New route for /create_game
+// New route for /create_game that accepts gameName and gamePlayers
 app.post('/create_game', (req: Request, res: Response): void => {
-  const { placeId } = req.body;
+  const { placeId, gameName, gamePlayers } = req.body;
 
   if (!placeId) {
     res.status(400).send('Missing required field: placeId.');
@@ -107,6 +77,18 @@ app.post('/create_game', (req: Request, res: Response): void => {
   try {
     const gameFolderPath = path.join(__dirname, 'data', 'games', placeId.toString());
     ensureDirectoryExists(gameFolderPath);
+    
+    // Save game info to a JSON file
+    const gameInfoPath = path.join(gameFolderPath, 'gameInfo.json');
+    const gameInfo = {
+      id: placeId,
+      name: gameName || 'Unknown Game',
+      players: gamePlayers || 0,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    fs.writeFileSync(gameInfoPath, JSON.stringify(gameInfo, null, 2));
+    
     res.status(200).send(`Game folder created successfully: ${gameFolderPath}`);
   } catch (error) {
     console.error('Error creating game folder:', error);
@@ -114,6 +96,54 @@ app.post('/create_game', (req: Request, res: Response): void => {
   }
 });
 
+// Update GET route for /get_games to include game info
+app.get('/get_games', async (req: Request, res: Response): Promise<void> => {
+    const gamesDirectory = path.join(__dirname, 'data', 'games');
+    
+    // Ensure the directory exists
+    ensureDirectoryExists(gamesDirectory);
+
+    fs.readdir(gamesDirectory, async (err, files) => {
+        if (err) {
+            console.error('Error reading games directory:', err);
+            res.status(500).send('Error reading games directory');
+            return;
+        }
+
+        // Filter out non-directory files
+        const gameFolders = files.filter(file => {
+            const filePath = path.join(gamesDirectory, file);
+            return fs.statSync(filePath).isDirectory();
+        });
+        
+        // Get game info for each folder
+        const gameInfoList = gameFolders.map(gameId => {
+            const gameInfoPath = path.join(gamesDirectory, gameId, 'gameInfo.json');
+            
+            if (fs.existsSync(gameInfoPath)) {
+                try {
+                    const gameInfoData = fs.readFileSync(gameInfoPath, 'utf8');
+                    return JSON.parse(gameInfoData);
+                } catch (error) {
+                    console.error(`Error reading game info for ${gameId}:`, error);
+                    return {
+                        id: gameId,
+                        name: 'Unknown Game',
+                        players: 0
+                    };
+                }
+            } else {
+                return {
+                    id: gameId,
+                    name: 'Unknown Game',
+                    players: 0
+                };
+            }
+        });
+
+        res.status(200).json(gameInfoList);
+    });
+});
 // New route for /create_user
 app.post('/create_user', (req: Request, res: Response): void => {
   const { placeId, username } = req.body;
