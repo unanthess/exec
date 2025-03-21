@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,40 +27,28 @@
     </script>
     <style>
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         .fade-in {
             animation: fadeIn 0.3s ease-out;
         }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #1A202C;
-            /* Dark background */
+            background: #1A202C; /* Dark background */
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #4A5568;
-            /* Scrollbar color */
+            background: #4A5568; /* Scrollbar color */
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #667EEA;
-            /* Scrollbar hover color */
+            background: #667EEA; /* Scrollbar hover color */
         }
 
         .game-card {
@@ -78,8 +65,7 @@
 
         #games-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            /* Adjust minmax as needed */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust minmax as needed */
             gap: 16px;
         }
 
@@ -101,13 +87,11 @@
 
         #scripts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            /* Adjust minmax as needed */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust minmax as needed */
             gap: 16px;
         }
     </style>
 </head>
-
 <body class="bg-gray-900 text-white font-inter flex h-screen overflow-hidden">
 
     <!-- Sidebar -->
@@ -119,52 +103,26 @@
         <nav class="flex-1 overflow-y-auto p-4">
             <ul>
                 <li>
-                    <a href="#"
-                        class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300"
-                        data-tab="executor">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9.75 17L9 20l-1.25-3m5.25-3l.75-3L15 7.5m-6 10V4a1 1 0 011-1h.75a1 1 0 011 1v13m-3 0h.75a1 1 0 001-1V10.5a1 1 0 00-1-1H5.25a1 1 0 001 1v6.5a1 1 0 001 1H6">
-                            </path>
-                        </svg>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="executor">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1.25-3m5.25-3l.75-3L15 7.5m-6 10V4a1 1 0 011-1h.75a1 1 0 011 1v13m-3 0h.75a1 1 0 001-1V10.5a1 1 0 00-1-1H5.25a1 1 0 001 1v6.5a1 1 0 001 1H6"></path></svg>
                         Executor
                     </a>
                 </li>
                 <li>
-                    <a href="#"
-                        class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300"
-                        data-tab="games">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="games">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         Games
                     </a>
                 </li>
                 <li>
-                    <a href="#"
-                        class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300 active-link"
-                        data-tab="scriptHub">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 4.75 7.5 4.75a12.742 12.742 0 00-2.5 0c-1.746.724-3.332 1.447-4.687 2.171M12 6.253v13m0-13C13.168 5.477 14.754 4.75 16.5 4.75a12.742 12.742 0 012.5 0c1.746.724 3.332 1.447 4.687 2.171M12 6.253v13m0-13C11.079 14.76L7.5 15.75M12 6.253v13m0-13C12.921 14.76L16.5 15.75M12 10.206c0 .297.169.543.425.609l3.954 1.04M12 10.206c0 .297-.169.543-.425.609l-3.954 1.04m0 0a3.003 3.003 0 00-2.548 2.934m6.096 0a3.003 3.003 0 01-2.548 2.934">
-                            </path>
-                        </svg>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300 active-link" data-tab="scriptHub">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 4.75 7.5 4.75a12.742 12.742 0 00-2.5 0c-1.746.724-3.332 1.447-4.687 2.171M12 6.253v13m0-13C13.168 5.477 14.754 4.75 16.5 4.75a12.742 12.742 0 012.5 0c1.746.724 3.332 1.447 4.687 2.171M12 6.253v13m0-13C11.079 14.76L7.5 15.75M12 6.253v13m0-13C12.921 14.76L16.5 15.75M12 10.206c0 .297.169.543.425.609l3.954 1.04M12 10.206c0 .297-.169.543-.425.609l-3.954 1.04m0 0a3.003 3.003 0 00-2.548 2.934m6.096 0a3.003 3.003 0 01-2.548 2.934"></path></svg>
                         Script Hub
                     </a>
                 </li>
                 <li>
-                    <a href="#"
-                        class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300"
-                        data-tab="account">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="account">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         Account
                     </a>
                 </li>
@@ -178,18 +136,15 @@
         <header class="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-blue-400">Phospher Service</h1>
             <div>
-                <span id="usernameDisplay" class="text-gray-300 mr-4"></span>
-                <button id="logoutButton" onclick="logout()"
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 hidden">Logout</button>
+                <button id="logoutButton" onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 hidden">Logout</button>
             </div>
         </header>
+
         <!-- Main Content Area -->
         <main class="flex-1 bg-gray-900 overflow-x-hidden overflow-y-auto p-6">
             <div id="loginForm" class="bg-gray-800 rounded-lg p-6 shadow-lg mb-6 fade-in">
-                <input type="text" id="usernameInput" placeholder="Enter your Roblox username"
-                    class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
-                <button onclick="login()"
-                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Login</button>
+                <input type="text" id="usernameInput" placeholder="Enter your Roblox username" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+                <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Login</button>
             </div>
 
             <div id="mainPanel" class="hidden">
@@ -197,18 +152,11 @@
                     <h2 class="text-2xl font-semibold mb-4 text-blue-300">Codebox</h2>
                     <div id="editor" class="w-full h-64 bg-gray-700 rounded-md mb-4"></div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="executeEditorScript()"
-                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Execute</button>
-                        <button onclick="clearEditor()"
-                            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Clear</button>
-                        <button onclick="openFile()"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Open
-                            File</button>
-                        <button onclick="saveFile()"
-                            class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Save
-                            File</button>
-                        <button onclick="showAttachModal()"
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+                        <button onclick="executeEditorScript()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Execute</button>
+                        <button onclick="clearEditor()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Clear</button>
+                        <button onclick="openFile()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Open File</button>
+                        <button onclick="saveFile()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Save File</button>
+                        <button onclick="showAttachModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
                     </div>
                 </div>
 
@@ -228,24 +176,18 @@
 
                 <div id="account" class="tab-content hidden">
                     <h2 class="text-2xl font-semibold mb-4 text-blue-300">Account</h2>
-                    <button onclick="changeWhitelist()"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 mb-2">Change
-                        Whitelist</button>
-                    <button onclick="logout()"
-                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Logout</button>
+                    <button onclick="changeWhitelist()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 mb-2">Change Whitelist</button>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Logout</button>
                 </div>
             </div>
 
             <div id="attachModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                 <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
                     <h3 class="text-xl font-semibold mb-4 text-blue-300">Attach to Game</h3>
-                    <input type="text" id="gameIdInput" placeholder="Enter Game ID"
-                        class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+                    <input type="text" id="gameIdInput" placeholder="Enter Game ID" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
                     <div class="flex justify-end gap-2">
-                        <button onclick="hideAttachModal()"
-                            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Cancel</button>
-                        <button onclick="attachToGame()"
-                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+                        <button onclick="hideAttachModal()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Cancel</button>
+                        <button onclick="attachToGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
                     </div>
                 </div>
             </div>
@@ -256,9 +198,8 @@
         let editor;
         let currentUsername = localStorage.getItem('robloxUsername');
         let currentGameId = localStorage.getItem('currentGameId');
-        let authToken = localStorage.getItem('authToken');
 
-        window.onload = function () {
+        window.onload = function() {
             editor = ace.edit("editor");
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/lua");
@@ -266,7 +207,7 @@
             // Sidebar functionality
             const sidebarItems = document.querySelectorAll('aside a');
             sidebarItems.forEach(item => {
-                item.addEventListener('click', function (e) {
+                item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tabName = this.getAttribute('data-tab');
                     openTab(tabName);
@@ -277,11 +218,10 @@
                 });
             });
 
-            if (authToken) {
+            if (currentUsername) {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('mainPanel').classList.remove('hidden');
                 document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
-                document.getElementById('usernameDisplay').textContent = `Logged in as: ${localStorage.getItem('robloxUsername')}`;  // Display username
                 openTab('scriptHub'); // Open the scriptHub tab by default
 
                 // Set active class on the scriptHub tab
@@ -296,55 +236,19 @@
         function login() {
             const username = document.getElementById('usernameInput').value.trim();
             if (username) {
-                fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: username })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.token) {
-                            localStorage.setItem('authToken', data.token);
-                            localStorage.setItem('robloxUsername', username);
-                            authToken = data.token;
-                            currentUsername = username;
+                localStorage.setItem('robloxUsername', username);
+                currentUsername = username;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('mainPanel').classList.remove('hidden');
+                document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
+                openTab('scriptHub'); // Open the scriptHub tab after login
 
-                            document.getElementById('loginForm').classList.add('hidden');
-                            document.getElementById('mainPanel').classList.remove('hidden');
-                            document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
-                            document.getElementById('usernameDisplay').textContent = `Logged in as: ${username}`;  // Display username
-
-                            openTab('scriptHub'); // Open the scriptHub tab after login
-
-                            // Set active class on the scriptHub tab
-                            const sidebarItems = document.querySelectorAll('aside a');
-                            sidebarItems.forEach(item => item.classList.remove('active-link'));
-                            document.querySelector('aside a[data-tab="scriptHub"]').classList.add('active-link');
-                        } else {
-                            alert('Login failed.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Login failed.');
-                    });
+                // Set active class on the scriptHub tab
+                const sidebarItems = document.querySelectorAll('aside a');
+                sidebarItems.forEach(item => item.classList.remove('active-link'));
+                document.querySelector('aside a[data-tab="scriptHub"]').classList.add('active-link');
             }
         }
-
-        function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('robloxUsername');
-            authToken = null;
-            currentUsername = null;
-
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('mainPanel').classList.add('hidden');
-            document.getElementById('logoutButton').classList.add('hidden');
-            document.getElementById('usernameDisplay').textContent = ''; // Clear username display
-        }
-
 
         function executeEditorScript() {
             const content = editor.getValue();
@@ -352,8 +256,8 @@
         }
 
         function executeScript(scriptContent) {
-            if (!currentUsername || !currentGameId || !authToken) {
-                alert('Please log in, attach to a game, and ensure you are authenticated.');
+            if (!currentUsername || !currentGameId) {
+                alert('Please log in and attach to a game first.');
                 return;
             }
 
@@ -361,7 +265,6 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`  // Include token in header
                 },
                 body: JSON.stringify({
                     playerName: currentUsername,
@@ -369,17 +272,17 @@
                     content: scriptContent
                 }),
             })
-                .then(response => response.text())
-                .then(result => {
-                    alert(result);
-                    // Clear the editor after execution
-                    clearEditor();
-                })
-                .catch(error => console.error('Error:', error))
-                .finally(() => {
-                    // Clear cScript.txt after any execution
-                    clearCScript();
-                });
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+                // Clear the editor after execution
+                clearEditor();
+            })
+            .catch(error => console.error('Error:', error))
+            .finally(() => {
+                // Clear cScript.txt after any execution
+                clearCScript();
+            });
         }
 
         function clearEditor() {
@@ -421,135 +324,167 @@
         function attachToGame() {
             const gameId = document.getElementById('gameIdInput').value.trim();
             if (gameId) {
-                localStorage.setItem('currentGameId', gameId);
-                currentGameId = gameId;
-                hideAttachModal();
+                fetch('/create_game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ placeId: gameId }),
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    localStorage.setItem('currentGameId', gameId);
+                    currentGameId = gameId;
+                    hideAttachModal();
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+
+        function openTab(tabName) {
+             // Hide all tab content elements
+             const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.add('hidden');
+            }
+
+            // Show the selected tab content
+            document.getElementById(tabName).classList.remove('hidden');
+
+                // Deactivate all sidebar items
+                const sidebarItems = document.querySelectorAll('aside a');
+                sidebarItems.forEach(item => item.classList.remove('active-link'));
+
+                // Activate the selected sidebar item
+                const tabButton = document.querySelector('aside a[data-tab="'+tabName+'"]');
+                tabButton.classList.add('active-link');
+        }
+
+        function changeWhitelist() {
+            // Implement your change whitelist logic here
+            alert('Change Whitelist functionality will be implemented here.');
+        }
+
+        function logout() {
+            localStorage.removeItem('robloxUsername');
+            localStorage.removeItem('currentGameId');
+            currentUsername = null;
+            currentGameId = null;
+
+            // Show the login form and hide the main panel
+            document.getElementById('mainPanel').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('logoutButton').classList.add('hidden'); // Hide logout button
+
+            // Deactivate all sidebar items
+            const sidebarItems = document.querySelectorAll('aside a');
+            sidebarItems.forEach(item => item.classList.remove('active-link'));
+        }
+
+        async function loadGames() {
+            try {
+                const response = await fetch('/get_games');
+                const games = await response.json();
+                const gamesContainer = document.getElementById('games-container');
+                gamesContainer.innerHTML = ''; // Clear existing content
+
+                games.forEach(game => {
+                    const gameCard = document.createElement('div');
+                    gameCard.className = 'game-card';
+
+                    const gameTitle = document.createElement('h3');
+                    gameTitle.className = 'game-title';
+                    gameTitle.textContent = game;
+
+                    const gameLink = document.createElement('a');
+                    gameLink.href = `https://roblox.com/games/${game}`;
+                    gameLink.textContent = game; // redundant but necessary for visual clarity in the card
+                    gameLink.target = '_blank';
+                    gameLink.className = 'block mb-2';
+
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-id-button';
+                    copyButton.textContent = 'Copy ID';
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(game);
+                    });
+
+                    gameCard.appendChild(gameLink);
+                    gameCard.appendChild(copyButton);
+                    gamesContainer.appendChild(gameCard);
+                });
+            } catch (error) {
+                console.error('Error loading games:', error);
+            }
+        }
+
+        async function loadScripts() {
+            try {
+                const response = await fetch('/get_scripts');
+                let scripts = await response.json();
+
+                // Get the username from localStorage
+                const username = localStorage.getItem('robloxUsername');
+
+                // Replace "UsernameHere" with the actual username in each script
+                scripts = scripts.map(script => ({
+                    ...script,
+                    script: script.script.replace(/UsernameHere/g, username)
+                }));
+
+
+                const scriptsContainer = document.getElementById('scripts-container');
+                scriptsContainer.innerHTML = '';
+
+                scripts.forEach(script => {
+                    const scriptCard = document.createElement('div');
+                    scriptCard.className = 'script-card';
+
+                    const scriptTitle = document.createElement('h3');
+                    scriptTitle.className = 'script-title';
+                    scriptTitle.textContent = script.title;
+
+                    const scriptDescription = document.createElement('p');
+                    scriptDescription.className = 'script-description';
+                    scriptDescription.textContent = script.description;
+
+                    const executeButton = document.createElement('button');
+                    executeButton.className = 'execute-script-button';
+                    executeButton.textContent = 'Execute';
+                    executeButton.addEventListener('click', () => {
+                        executeScript(script.script);
+                    });
+
+                    scriptCard.appendChild(scriptTitle);
+                    scriptCard.appendChild(scriptDescription);
+                    scriptCard.appendChild(executeButton);
+                    scriptsContainer.appendChild(scriptCard);
+                });
+            } catch (error) {
+                console.error('Error loading scripts:', error);
             }
         }
 
         function clearCScript() {
-            if (!currentUsername || !currentGameId || !authToken) {
-                console.warn('Cannot clear cScript: Missing username, game ID, or auth token.');
-                return;
-            }
-
+            // Make a request to your server to clear cScript.txt
             fetch('/clear_cscript', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}` // Include token
                 },
                 body: JSON.stringify({
                     playerName: currentUsername,
                     placeId: currentGameId
                 })
             })
-                .then(response => response.text())
-                .then(result => {
-                    console.log('cScript cleared:', result);
-                })
-                .catch(error => console.error('Error clearing cScript:', error));
-        }
-
-        function loadGames() {
-            if (!authToken) {
-                console.warn('Cannot load games: Missing auth token.');
-                return;
-            }
-            fetch('/get_games', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}` // Include token
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to clear cScript.txt');
                 }
             })
-                .then(response => response.json())
-                .then(games => {
-                    const gamesContainer = document.getElementById('games-container');
-                    gamesContainer.innerHTML = ''; // Clear existing content
-
-                    games.forEach(gameId => {
-                        const gameCard = document.createElement('div');
-                        gameCard.classList.add('game-card');
-
-                        const gameTitle = document.createElement('h3');
-                        gameTitle.classList.add('game-title');
-                        gameTitle.textContent = `Game ID: ${gameId}`;
-
-                        const copyIdButton = document.createElement('button');
-                        copyIdButton.classList.add('copy-id-button');
-                        copyIdButton.textContent = 'Copy ID';
-                        copyIdButton.addEventListener('click', () => {
-                            navigator.clipboard.writeText(gameId)
-                                .then(() => alert('Game ID copied to clipboard!'))
-                                .catch(err => console.error('Failed to copy: ', err));
-                        });
-
-                        gameCard.appendChild(gameTitle);
-                        gameCard.appendChild(copyIdButton);
-                        gamesContainer.appendChild(gameCard);
-                    });
-                })
-                .catch(error => console.error('Error loading games:', error));
-        }
-
-        function loadScripts() {
-            if (!authToken) {
-                console.warn('Cannot load scripts: Missing auth token.');
-                return;
-            }
-
-            fetch('/get_scripts', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}` // Include token
-                }
-            })
-                .then(response => response.json())
-                .then(scripts => {
-                    const scriptsContainer = document.getElementById('scripts-container');
-                    scriptsContainer.innerHTML = ''; // Clear existing content
-
-                    scripts.forEach(script => {
-                        const scriptCard = document.createElement('div');
-                        scriptCard.classList.add('script-card');
-
-                        const scriptTitle = document.createElement('h3');
-                        scriptTitle.classList.add('script-title');
-                        scriptTitle.textContent = script.title;
-
-                        const scriptDescription = document.createElement('p');
-                        scriptDescription.classList.add('script-description');
-                        scriptDescription.textContent = script.description;
-
-                        const executeButton = document.createElement('button');
-                        executeButton.classList.add('execute-script-button');
-                        executeButton.textContent = 'Execute Script';
-                        executeButton.addEventListener('click', () => executeScript(script.content));
-
-                        scriptCard.appendChild(scriptTitle);
-                        scriptCard.appendChild(scriptDescription);
-                        scriptCard.appendChild(executeButton);
-                        scriptsContainer.appendChild(scriptCard);
-                    });
-                })
-                .catch(error => console.error('Error loading scripts:', error));
-        }
-
-        function openTab(tabName) {
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(tabContent => {
-                tabContent.classList.add('hidden');
-            });
-
-            document.getElementById(tabName).classList.remove('hidden');
-
-            if (tabName === 'games') {
-                loadGames();
-            } else if (tabName === 'scriptHub') {
-                loadScripts();
-            }
+            .catch(error => console.error('Error clearing cScript.txt:', error));
         }
     </script>
 </body>
-
 </html>

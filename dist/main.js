@@ -49,39 +49,36 @@ const express_1 = __importDefault(require("express"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const https_1 = __importDefault(require("https"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken")); // Import JWT
-const cors_1 = __importDefault(require("cors")); // Import CORS
-const dotenv = __importStar(require("dotenv")); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+const cors_1 = __importDefault(require("cors"));
+const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const app = (0, express_1.default)();
 const PORT = 5038;
-const ip = '192.168.178.52';
+const ip = "192.168.178.52";
 const SECRET_KEY = process.env.key443 || 'your_secret_key'; // Use environment variable or default
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
-// Middleware to verify JWT token
-const authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(' ')[1]; // "Bearer TOKEN"
-        jsonwebtoken_1.default.verify(token, SECRET_KEY, (err, user) => {
-            if (err) {
-                return res.sendStatus(403); // Forbidden
-            }
-            req.user = user;
-            next();
-        });
+// Middleware to verify the key
+const authenticateKey = (req, res, next) => {
+    const apiKey = req.body.apiKey || req.query.apiKey; // Check for API key in body or query
+    if (!apiKey || apiKey !== SECRET_KEY) {
+        res.status(403).send('Access denied. Invalid API key.');
+        return; // Important: Return to prevent further execution
     }
-    else {
-        res.sendStatus(401); // Unauthorized
-    }
+    next();
 };
 // Helper function to ensure a directory exists
 function ensureDirectoryExists(dirPath) {
-    if (!fs_1.default.existsSync(dirPath)) {
-        fs_1.default.mkdirSync(dirPath, { recursive: true });
-        console.log(`Created directory: ${dirPath}`);
+    try {
+        if (!fs_1.default.existsSync(dirPath)) {
+            fs_1.default.mkdirSync(dirPath, { recursive: true });
+            console.log(`Created directory: ${dirPath}`);
+        }
+    }
+    catch (error) {
+        console.error(`Error creating directory ${dirPath}:`, error);
+        throw error; // Re-throw the error to be caught by the route handler
     }
 }
 // Function to get Roblox game name by ID (no auth needed)
@@ -116,46 +113,37 @@ function getRobloxGameName(placeId) {
         });
     });
 }
-// Login route - generates a token
-app.post('/login', (req, res) => {
-    const { username } = req.body;
-    if (username) {
-        // In a real application, you'd validate the username against a database
-        const user = { username: username }; // Simplified user object
-        const token = jsonwebtoken_1.default.sign(user, SECRET_KEY); //Removed expireIn to allow for auto relog
-        res.json({ token: token, username: username }); // Send token and username
-    }
-    else {
-        res.status(400).send('Missing username');
-    }
-});
 // POST route for /execute - PROTECTED
-app.post('/execute', authenticateJWT, (req, res) => {
+app.post('/execute', authenticateKey, (req, res) => {
     const { playerName, placeId, content } = req.body;
     if (!playerName || !placeId || !content) {
         res.status(400).send('Missing required fields: playerName, placeId, or content.');
-        return;
+        return; // Return void after sending the response
     }
     try {
+        // TO DO: Sanitize playerName, placeId, content
         const scriptFilePath = path_1.default.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
         ensureDirectoryExists(path_1.default.dirname(scriptFilePath));
         fs_1.default.writeFileSync(scriptFilePath, content);
         res.status(200).send(`Content written successfully to ${scriptFilePath}`);
+        return; // Return void after sending the response
     }
     catch (error) {
         console.error('Error processing request:', error);
         res.status(500).send('An error occurred while processing your request.');
+        return; // Return void after sending the response
     }
 });
 // GET route for /get_script - PROTECTED
-app.get('/get_script', authenticateJWT, (req, res) => {
+app.get('/get_script', authenticateKey, (req, res) => {
     const { playerName, placeId } = req.query;
     if (!playerName || !placeId) {
         res.status(400).send('Missing required query parameters: playerName or placeId.');
-        return;
+        return; // Return void after sending the response
     }
     try {
-        const scriptFilePath = path_1.default.join(__dirname, 'data', 'games', placeId.toString(), playerName.toString(), 'cScript.txt');
+        // TO DO: Sanitize playerName, placeId
+        const scriptFilePath = path_1.default.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
         ensureDirectoryExists(path_1.default.dirname(scriptFilePath));
         if (!fs_1.default.existsSync(scriptFilePath)) {
             fs_1.default.writeFileSync(scriptFilePath, ''); // Create empty file if it doesn't exist
@@ -163,110 +151,130 @@ app.get('/get_script', authenticateJWT, (req, res) => {
         }
         const scriptContent = fs_1.default.readFileSync(scriptFilePath, 'utf8');
         res.status(200).type('text/plain').send(scriptContent);
+        return; // Return void after sending the response
     }
     catch (error) {
         console.error('Error retrieving script:', error);
         res.status(500).send('An error occurred while retrieving the script.');
+        return; // Return void after sending the response
     }
 });
 // New route for /create_game - PROTECTED
-app.post('/create_game', authenticateJWT, (req, res) => {
+app.post('/create_game', authenticateKey, (req, res) => {
     const { placeId } = req.body;
     if (!placeId) {
         res.status(400).send('Missing required field: placeId.');
-        return;
+        return; // Return void after sending the response
     }
     try {
-        const gameFolderPath = path_1.default.join(__dirname, 'data', 'games', placeId.toString());
+        // TO DO: Sanitize placeId
+        const gameFolderPath = path_1.default.join(__dirname, 'data', 'games', placeId);
         ensureDirectoryExists(gameFolderPath);
         res.status(200).send(`Game folder created successfully: ${gameFolderPath}`);
+        return; // Return void after sending the response
     }
     catch (error) {
         console.error('Error creating game folder:', error);
         res.status(500).send('An error occurred while creating the game folder.');
+        return; // Return void after sending the response
     }
 });
 // New route for /create_user - PROTECTED
-app.post('/create_user', authenticateJWT, (req, res) => {
+app.post('/create_user', authenticateKey, (req, res) => {
     const { placeId, username } = req.body;
     if (!placeId || !username) {
         res.status(400).send('Missing required fields: placeId or username.');
-        return;
+        return; // Return void after sending the response
     }
     try {
-        const userFolderPath = path_1.default.join(__dirname, 'data', 'games', placeId.toString(), username);
+        // TO DO: Sanitize placeId, username
+        const userFolderPath = path_1.default.join(__dirname, 'data', 'games', placeId, username);
         ensureDirectoryExists(userFolderPath);
         res.status(200).send(`User folder created successfully: ${userFolderPath}`);
+        return; // Return void after sending the response
     }
     catch (error) {
         console.error('Error creating user folder:', error);
         res.status(500).send('An error occurred while creating the user folder.');
+        return; // Return void after sending the response
     }
 });
 // GET route for /get_games - PROTECTED
-app.get('/get_games', authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/get_games', authenticateKey, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const gamesDirectory = path_1.default.join(__dirname, 'data', 'games');
-    fs_1.default.readdir(gamesDirectory, (err, files) => __awaiter(void 0, void 0, void 0, function* () {
-        if (err) {
-            console.error('Error reading games directory:', err);
-            res.status(500).send('Error reading games directory');
-            return;
-        }
+    try {
+        const files = yield fs_1.default.promises.readdir(gamesDirectory);
         // Filter out non-directory files
-        const gameFolders = files.filter(file => {
+        const gameFolders = [];
+        for (const file of files) {
             const filePath = path_1.default.join(gamesDirectory, file);
-            return fs_1.default.statSync(filePath).isDirectory();
-        });
+            const stat = yield fs_1.default.promises.stat(filePath);
+            if (stat.isDirectory()) {
+                gameFolders.push(file);
+            }
+        }
         res.status(200).json(gameFolders);
-    }));
+        return; // Return void after sending the response
+    }
+    catch (err) {
+        console.error('Error reading games directory:', err);
+        res.status(500).send('Error reading games directory');
+        return; // Return void after sending the response
+    }
 }));
 // GET route for /get_scripts - PROTECTED
-app.get('/get_scripts', authenticateJWT, (req, res) => {
+app.get('/get_scripts', authenticateKey, (req, res) => {
     const scriptsFilePath = path_1.default.join(__dirname, 'scripts.json');
     fs_1.default.readFile(scriptsFilePath, 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading scripts.json:', err);
             res.status(500).send('Error reading scripts data');
-            return;
+            return; // Return void after sending the response
         }
         try {
             const scripts = JSON.parse(data);
             res.status(200).json(scripts);
+            return; // Return void after sending the response
         }
         catch (error) {
             console.error('Error parsing scripts.json:', error);
             res.status(500).send('Error parsing scripts data');
+            return; // Return void after sending the response
         }
     });
 });
 // POST route for /clear_cscript - PROTECTED
-app.post('/clear_cscript', authenticateJWT, (req, res) => {
+app.post('/clear_cscript', authenticateKey, (req, res) => {
     const { playerName, placeId } = req.body;
     if (!playerName || !placeId) {
         res.status(400).send('Missing required fields: playerName, placeId.');
-        return;
+        return; // Return void after sending the response
     }
     try {
+        // TO DO: Sanitize playerName, placeId
         const scriptFilePath = path_1.default.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
         ensureDirectoryExists(path_1.default.dirname(scriptFilePath)); // Ensure directory exists
         fs_1.default.writeFile(scriptFilePath, '', (err) => {
             if (err) {
                 console.error('Error clearing cScript.txt:', err);
                 res.status(500).send('Error clearing cScript.txt');
-                return;
+                return; // Return void after sending the response
             }
             console.log(`cScript.txt cleared for ${playerName} in ${placeId}`);
             res.status(200).send('cScript.txt cleared successfully.');
+            return; // Return void after sending the response
         });
     }
     catch (error) {
         console.error('Error processing request:', error);
         res.status(500).send('An error occurred while clearing cScript.txt.');
+        return; // Return void after sending the response
     }
 });
 // Route for the web panel - NO AUTH
 app.get('/panel', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, 'public', 'panel.html'));
+    return; // Return void after sending the response
 });
 // Start the server
 app.listen(PORT, ip, () => {
