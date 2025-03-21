@@ -14,10 +14,16 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'sans-serif'],
-                    },
-                },
-            },
-        }
+                        },
+                        colors: {
+                            'sidebar-dark': '#2D3748',
+                            'sidebar-light': '#374151',
+                            'sidebar-hover': '#4A5568',
+                            'primary': '#667EEA',
+                            },
+                            },
+                            },
+                            }
     </script>
     <style>
         @keyframes fadeIn {
@@ -27,39 +33,165 @@
         .fade-in {
             animation: fadeIn 0.3s ease-out;
         }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1A202C; /* Dark background */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4A5568; /* Scrollbar color */
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #667EEA; /* Scrollbar hover color */
+        }
+
+        .game-card {
+            @apply bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300;
+        }
+
+        .game-title {
+            @apply text-xl font-semibold text-blue-300 mb-2;
+        }
+
+        .copy-id-button {
+            @apply bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200;
+        }
+
+        #games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust minmax as needed */
+            gap: 16px;
+        }
+
+        .script-card {
+            @apply bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300;
+        }
+
+        .script-title {
+            @apply text-xl font-semibold text-blue-300 mb-2;
+        }
+
+        .script-description {
+            @apply text-gray-400 mb-4;
+        }
+
+        .execute-script-button {
+            @apply bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200;
+        }
+
+        #scripts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust minmax as needed */
+            gap: 16px;
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-inter">
-    <div class="container mx-auto p-6">
-        <h1 class="text-4xl font-bold mb-8 text-center text-blue-400">secret lgima panel ultimate 42</h1>
-        
-        <div id="loginForm" class="bg-gray-800 rounded-lg p-6 shadow-lg mb-6 fade-in">
-            <input type="text" id="usernameInput" placeholder="Enter your Roblox username" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
-            <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Login</button>
+<body class="bg-gray-900 text-white font-inter flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="bg-sidebar-dark w-64 flex flex-col shadow-lg">
+        <div class="flex items-center justify-center h-16 bg-sidebar-light border-b border-gray-700">
+            <span class="text-xl font-semibold text-primary">LGIMA 42</span>
         </div>
 
-        <div id="executorPanel" class="hidden bg-gray-800 rounded-lg p-6 shadow-lg fade-in">
-            <h2 class="text-2xl font-semibold mb-4 text-blue-300">codebox</h2>
-            <div id="editor" class="w-full h-64 bg-gray-700 rounded-md mb-4"></div>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="executeScript()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Execute</button>
-                <button onclick="clearEditor()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Clear</button>
-                <button onclick="openFile()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Open File</button>
-                <button onclick="saveFile()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Save File</button>
-                <button onclick="showAttachModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+        <nav class="flex-1 overflow-y-auto p-4">
+            <ul>
+                <li>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="executor">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1.25-3m5.25-3l.75-3L15 7.5m-6 10V4a1 1 0 011-1h.75a1 1 0 011 1v13m-3 0h.75a1 1 0 001-1V10.5a1 1 0 00-1-1H5.25a1 1 0 001 1v6.5a1 1 0 001 1H6"></path></svg>
+                        Executor
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300 active-link" data-tab="games">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        Games
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="scriptHub">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 4.75 7.5 4.75a12.742 12.742 0 00-2.5 0c-1.746.724-3.332 1.447-4.687 2.171M12 6.253v13m0-13C13.168 5.477 14.754 4.75 16.5 4.75a12.742 12.742 0 012.5 0c1.746.724 3.332 1.447 4.687 2.171M12 6.253v13m0-13C11.079 14.76L7.5 15.75M12 6.253v13m0-13C12.921 14.76L16.5 15.75M12 10.206c0 .297.169.543.425.609l3.954 1.04M12 10.206c0 .297-.169.543-.425.609l-3.954 1.04m0 0a3.003 3.003 0 00-2.548 2.934m6.096 0a3.003 3.003 0 01-2.548 2.934"></path></svg>
+                        Script Hub
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="account">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Account
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between">
+            <h1 class="text-2xl font-semibold text-blue-400">secret lgima panel ultimate 42</h1>
+            <div>
+                <button id="logoutButton" onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 hidden">Logout</button>
             </div>
-        </div>
+        </header>
 
-        <div id="attachModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
-                <h3 class="text-xl font-semibold mb-4 text-blue-300">Attach to Game</h3>
-                <input type="text" id="gameIdInput" placeholder="Enter Game ID" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
-                <div class="flex justify-end gap-2">
-                    <button onclick="hideAttachModal()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Cancel</button>
-                    <button onclick="attachToGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-gray-900 overflow-x-hidden overflow-y-auto p-6">
+            <div id="loginForm" class="bg-gray-800 rounded-lg p-6 shadow-lg mb-6 fade-in">
+                <input type="text" id="usernameInput" placeholder="Enter your Roblox username" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+                <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Login</button>
+            </div>
+
+            <div id="mainPanel" class="hidden">
+                <div id="executor" class="tab-content hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-300">Codebox</h2>
+                    <div id="editor" class="w-full h-64 bg-gray-700 rounded-md mb-4"></div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="executeEditorScript()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Execute</button>
+                        <button onclick="clearEditor()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Clear</button>
+                        <button onclick="openFile()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Open File</button>
+                        <button onclick="saveFile()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Save File</button>
+                        <button onclick="showAttachModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+                    </div>
+                </div>
+
+                <div id="games" class="tab-content">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-300">Games</h2>
+                    <div id="games-container" class="mt-4">
+                        <!-- Game elements will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div id="scriptHub" class="tab-content hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-300">Script Hub</h2>
+                    <div id="scripts-container" class="mt-4">
+                        <!-- Script elements will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div id="account" class="tab-content hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-300">Account</h2>
+                    <button onclick="changeWhitelist()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 mb-2">Change Whitelist</button>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Logout</button>
                 </div>
             </div>
-        </div>
+
+            <div id="attachModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-300">Attach to Game</h3>
+                    <input type="text" id="gameIdInput" placeholder="Enter Game ID" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+                    <div class="flex justify-end gap-2">
+                        <button onclick="hideAttachModal()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Cancel</button>
+                        <button onclick="attachToGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
@@ -72,10 +204,33 @@
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/lua");
 
+            // Sidebar functionality
+            const sidebarItems = document.querySelectorAll('aside a');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabName = this.getAttribute('data-tab');
+                    openTab(tabName);
+
+                    // Remove active class from other items and add to current item
+                    sidebarItems.forEach(item => item.classList.remove('active-link'));
+                    this.classList.add('active-link');
+                });
+            });
+
             if (currentUsername) {
                 document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('executorPanel').classList.remove('hidden');
+                document.getElementById('mainPanel').classList.remove('hidden');
+                document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
+                openTab('games'); // Open the games tab by default
+
+                // Set active class on the games tab
+                sidebarItems.forEach(item => item.classList.remove('active-link'));
+                document.querySelector('aside a[data-tab="games"]').classList.add('active-link');
             }
+
+            loadScripts();
+            loadGames();
         }
 
         function login() {
@@ -84,17 +239,28 @@
                 localStorage.setItem('robloxUsername', username);
                 currentUsername = username;
                 document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('executorPanel').classList.remove('hidden');
+                document.getElementById('mainPanel').classList.remove('hidden');
+                document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
+                openTab('games'); // Open the games tab after login
+
+                // Set active class on the games tab
+                const sidebarItems = document.querySelectorAll('aside a');
+                sidebarItems.forEach(item => item.classList.remove('active-link'));
+                document.querySelector('aside a[data-tab="games"]').classList.add('active-link');
             }
         }
 
-        function executeScript() {
+        function executeEditorScript() {
+            const content = editor.getValue();
+            executeScript(content);
+        }
+
+        function executeScript(scriptContent) {
             if (!currentUsername || !currentGameId) {
                 alert('Please log in and attach to a game first.');
                 return;
             }
 
-            const content = editor.getValue();
             fetch('/execute', {
                 method: 'POST',
                 headers: {
@@ -103,12 +269,20 @@
                 body: JSON.stringify({
                     playerName: currentUsername,
                     placeId: currentGameId,
-                    content: content
+                    content: scriptContent
                 }),
             })
             .then(response => response.text())
-            .then(result => alert(result))
-            .catch(error => console.error('Error:', error));
+            .then(result => {
+                alert(result);
+                // Clear the editor after execution
+                clearEditor();
+            })
+            .catch(error => console.error('Error:', error))
+            .finally(() => {
+                // Clear cScript.txt after any execution
+                clearCScript();
+            });
         }
 
         function clearEditor() {
@@ -166,6 +340,139 @@
                 })
                 .catch(error => console.error('Error:', error));
             }
+        }
+
+        function openTab(tabName) {
+             // Hide all tab content elements
+             const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.add('hidden');
+            }
+
+            // Show the selected tab content
+            document.getElementById(tabName).classList.remove('hidden');
+
+                // Deactivate all sidebar items
+                const sidebarItems = document.querySelectorAll('aside a');
+                sidebarItems.forEach(item => item.classList.remove('active-link'));
+
+                // Activate the selected sidebar item
+                const tabButton = document.querySelector('aside a[data-tab="'+tabName+'"]');
+                tabButton.classList.add('active-link');
+        }
+
+        function changeWhitelist() {
+            // Implement your change whitelist logic here
+            alert('Change Whitelist functionality will be implemented here.');
+        }
+
+        function logout() {
+            localStorage.removeItem('robloxUsername');
+            localStorage.removeItem('currentGameId');
+            currentUsername = null;
+            currentGameId = null;
+
+            // Show the login form and hide the main panel
+            document.getElementById('mainPanel').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('logoutButton').classList.add('hidden'); // Hide logout button
+
+            // Deactivate all sidebar items
+            const sidebarItems = document.querySelectorAll('aside a');
+            sidebarItems.forEach(item => item.classList.remove('active-link'));
+        }
+
+        async function loadGames() {
+            try {
+                const response = await fetch('/get_games');
+                const games = await response.json();
+                const gamesContainer = document.getElementById('games-container');
+                gamesContainer.innerHTML = ''; // Clear existing content
+
+                games.forEach(game => {
+                    const gameCard = document.createElement('div');
+                    gameCard.className = 'game-card';
+
+                    const gameTitle = document.createElement('h3');
+                    gameTitle.className = 'game-title';
+                    gameTitle.textContent = game;
+
+                    const gameLink = document.createElement('a');
+                    gameLink.href = `https://roblox.com/games/${game}`;
+                    gameLink.textContent = game; // redundant but necessary for visual clarity in the card
+                    gameLink.target = '_blank';
+                    gameLink.className = 'block mb-2';
+
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-id-button';
+                    copyButton.textContent = 'Copy ID';
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(game);
+                    });
+
+                    gameCard.appendChild(gameLink);
+                    gameCard.appendChild(copyButton);
+                    gamesContainer.appendChild(gameCard);
+                });
+            } catch (error) {
+                console.error('Error loading games:', error);
+            }
+        }
+
+        async function loadScripts() {
+            try {
+                const response = await fetch('/get_scripts');
+                const scripts = await response.json();
+                const scriptsContainer = document.getElementById('scripts-container');
+                scriptsContainer.innerHTML = '';
+
+                scripts.forEach(script => {
+                    const scriptCard = document.createElement('div');
+                    scriptCard.className = 'script-card';
+
+                    const scriptTitle = document.createElement('h3');
+                    scriptTitle.className = 'script-title';
+                    scriptTitle.textContent = script.title;
+
+                    const scriptDescription = document.createElement('p');
+                    scriptDescription.className = 'script-description';
+                    scriptDescription.textContent = script.description;
+
+                    const executeButton = document.createElement('button');
+                    executeButton.className = 'execute-script-button';
+                    executeButton.textContent = 'Execute';
+                    executeButton.addEventListener('click', () => {
+                        executeScript(script.script);
+                    });
+
+                    scriptCard.appendChild(scriptTitle);
+                    scriptCard.appendChild(scriptDescription);
+                    scriptCard.appendChild(executeButton);
+                    scriptsContainer.appendChild(scriptCard);
+                });
+            } catch (error) {
+                console.error('Error loading scripts:', error);
+            }
+        }
+
+        function clearCScript() {
+            // Make a request to your server to clear cScript.txt
+            fetch('/clear_cscript', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playerName: currentUsername,
+                    placeId: currentGameId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to clear cScript.txt');
+                }
+            })
+            .catch(error => console.error('Error clearing cScript.txt:', error));
         }
     </script>
 </body>

@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-
+import https from 'https'; // Import the https module
 const app = express();
 const PORT = 5038;
-const ip = '192.168.178.52'; // Your IP address
+const ip = '0.0.0.0'; // Your IP address
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -15,6 +15,37 @@ function ensureDirectoryExists(dirPath: string) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`Created directory: ${dirPath}`);
   }
+}
+
+// Function to get Roblox game name by ID
+async function getRobloxGameName(placeId: string): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    const url = `https://api.roblox.com/marketplace/productinfo?assetId=${placeId}`;
+    https.get(url, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        try {
+          const parsedData = JSON.parse(data);
+          if (parsedData && parsedData.Name) {
+            resolve(parsedData.Name);
+          } else {
+            resolve(null);
+          }
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+          reject(error);
+        }
+      });
+    }).on('error', (error) => {
+      console.error('Error fetching game name:', error);
+      reject(error);
+    });
+  });
 }
 
 // POST route for /execute
@@ -102,12 +133,82 @@ app.post('/create_user', (req: Request, res: Response): void => {
   }
 });
 
+// GET route for /get_games
+app.get('/get_games', async (req: Request, res: Response): Promise<void> => {
+    const gamesDirectory = path.join(__dirname, 'data', 'games');
+
+    fs.readdir(gamesDirectory, async (err, files) => {
+        if (err) {
+            console.error('Error reading games directory:', err);
+            res.status(500).send('Error reading games directory');
+            return;
+        }
+
+        // Filter out non-directory files
+        const gameFolders = files.filter(file => {
+            const filePath = path.join(gamesDirectory, file);
+            return fs.statSync(filePath).isDirectory();
+        });
+
+        res.status(200).json(gameFolders);
+    });
+});
+
+// GET route for /get_scripts
+app.get('/get_scripts', (req: Request, res: Response): void => {
+    const scriptsFilePath = path.join(__dirname, 'scripts.json');
+
+    fs.readFile(scriptsFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading scripts.json:', err);
+            res.status(500).send('Error reading scripts data');
+            return;
+        }
+
+        try {
+            const scripts = JSON.parse(data);
+            res.status(200).json(scripts);
+        } catch (error) {
+            console.error('Error parsing scripts.json:', error);
+            res.status(500).send('Error parsing scripts data');
+        }
+    });
+});
+
+// POST route for /clear_cscript
+app.post('/clear_cscript', (req: Request, res: Response): void => {
+    const { playerName, placeId } = req.body;
+
+    if (!playerName || !placeId) {
+        res.status(400).send('Missing required fields: playerName, placeId.');
+        return;
+    }
+
+    try {
+        const scriptFilePath = path.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
+        ensureDirectoryExists(path.dirname(scriptFilePath)); // Ensure directory exists
+
+        fs.writeFile(scriptFilePath, '', (err) => {  // Overwrite with an empty string
+            if (err) {
+                console.error('Error clearing cScript.txt:', err);
+                res.status(500).send('Error clearing cScript.txt');
+                return;
+            }
+            console.log(`cScript.txt cleared for ${playerName} in ${placeId}`);
+            res.status(200).send('cScript.txt cleared successfully.');
+        });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).send('An error occurred while clearing cScript.txt.');
+    }
+});
+
 // Route for the web panel
 app.get('/panel', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'public', 'panel.html'));
 });
 
 // Start the server
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, ip, () => {
   console.log(`Server listening on port ${PORT}`);
 });
