@@ -4,10 +4,10 @@
       "description": "Basic infinite yield script",
       "script": "require(13716575182)(_G.LigmaName)"
     },
-    {
+   {
       "title": "Speed Hack",
       "description": "Basic speed hack script",
       "script": "_G.LigmaPlayer.Character.Humanoid.WalkSpeed = 50"
-    }
+    } 
   ]
   

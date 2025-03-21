@@ -14,16 +14,16 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'sans-serif'],
-                        },
-                        colors: {
-                            'sidebar-dark': '#2D3748',
-                            'sidebar-light': '#374151',
-                            'sidebar-hover': '#4A5568',
-                            'primary': '#667EEA',
-                            },
-                            },
-                            },
-                            }
+                    },
+                    colors: {
+                        'sidebar-dark': '#2D3748',
+                        'sidebar-light': '#374151',
+                        'sidebar-hover': '#4A5568',
+                        'primary': '#667EEA',
+                    },
+                },
+            },
+        }
     </script>
     <style>
         @keyframes fadeIn {
@@ -109,13 +109,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300 active-link" data-tab="games">
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="games">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         Games
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300" data-tab="scriptHub">
+                    <a href="#" class="flex items-center py-2 px-4 rounded-md hover:bg-sidebar-hover transition-colors duration-200 text-gray-300 active-link" data-tab="scriptHub">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 4.75 7.5 4.75a12.742 12.742 0 00-2.5 0c-1.746.724-3.332 1.447-4.687 2.171M12 6.253v13m0-13C13.168 5.477 14.754 4.75 16.5 4.75a12.742 12.742 0 012.5 0c1.746.724 3.332 1.447 4.687 2.171M12 6.253v13m0-13C11.079 14.76L7.5 15.75M12 6.253v13m0-13C12.921 14.76L16.5 15.75M12 10.206c0 .297.169.543.425.609l3.954 1.04M12 10.206c0 .297-.169.543-.425.609l-3.954 1.04m0 0a3.003 3.003 0 00-2.548 2.934m6.096 0a3.003 3.003 0 01-2.548 2.934"></path></svg>
                         Script Hub
                     </a>
@@ -160,14 +160,14 @@
                     </div>
                 </div>
 
-                <div id="games" class="tab-content">
+                <div id="games" class="tab-content hidden">
                     <h2 class="text-2xl font-semibold mb-4 text-blue-300">Games</h2>
                     <div id="games-container" class="mt-4">
                         <!-- Game elements will be dynamically added here -->
                     </div>
                 </div>
 
-                <div id="scriptHub" class="tab-content hidden">
+                <div id="scriptHub" class="tab-content">
                     <h2 class="text-2xl font-semibold mb-4 text-blue-300">Script Hub</h2>
                     <div id="scripts-container" class="mt-4">
                         <!-- Script elements will be dynamically added here -->
@@ -222,11 +222,11 @@
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('mainPanel').classList.remove('hidden');
                 document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
-                openTab('games'); // Open the games tab by default
+                openTab('scriptHub'); // Open the scriptHub tab by default
 
-                // Set active class on the games tab
+                // Set active class on the scriptHub tab
                 sidebarItems.forEach(item => item.classList.remove('active-link'));
-                document.querySelector('aside a[data-tab="games"]').classList.add('active-link');
+                document.querySelector('aside a[data-tab="scriptHub"]').classList.add('active-link');
             }
 
             loadScripts();
@@ -241,12 +241,12 @@
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('mainPanel').classList.remove('hidden');
                 document.getElementById('logoutButton').classList.remove('hidden'); // Show logout button
-                openTab('games'); // Open the games tab after login
+                openTab('scriptHub'); // Open the scriptHub tab after login
 
-                // Set active class on the games tab
+                // Set active class on the scriptHub tab
                 const sidebarItems = document.querySelectorAll('aside a');
                 sidebarItems.forEach(item => item.classList.remove('active-link'));
-                document.querySelector('aside a[data-tab="games"]').classList.add('active-link');
+                document.querySelector('aside a[data-tab="scriptHub"]').classList.add('active-link');
             }
         }
 
@@ -422,7 +422,18 @@
         async function loadScripts() {
             try {
                 const response = await fetch('/get_scripts');
-                const scripts = await response.json();
+                let scripts = await response.json();
+
+                // Get the username from localStorage
+                const username = localStorage.getItem('robloxUsername');
+
+                // Replace "UsernameHere" with the actual username in each script
+                scripts = scripts.map(script => ({
+                    ...script,
+                    script: script.script.replace(/UsernameHere/g, username)
+                }));
+
+
                 const scriptsContainer = document.getElementById('scripts-container');
                 scriptsContainer.innerHTML = '';
 
