@@ -20,6 +20,10 @@ const PORT = 5038;
 const ip = '192.168.178.52'; // Your IP address
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
+const validLicenses = ['STUDIO_LICENSE_320', 'license2', 'license3']; // Example list of valid licenses
+function check_license(license) {
+    return validLicenses.includes(license);
+}
 // Helper function to ensure a directory exists
 function ensureDirectoryExists(dirPath) {
     if (!fs_1.default.existsSync(dirPath)) {
@@ -28,10 +32,15 @@ function ensureDirectoryExists(dirPath) {
     }
 }
 // POST route for /execute
+// Modify the /execute route to include license check
 app.post('/execute', (req, res) => {
-    const { playerName, placeId, content } = req.body;
-    if (!playerName || !placeId || !content) {
-        res.status(400).send('Missing required fields: playerName, placeId, or content.');
+    const { playerName, placeId, content, license } = req.body;
+    if (!playerName || !placeId || !content || !license) {
+        res.status(400).send('Missing required fields: playerName, placeId, content, or license.');
+        return;
+    }
+    if (!check_license(license)) {
+        res.status(403).send('Invalid license.');
         return;
     }
     try {
@@ -44,6 +53,16 @@ app.post('/execute', (req, res) => {
         console.error('Error processing request:', error);
         res.status(500).send('An error occurred while processing your request.');
     }
+});
+// Add this route to your backend
+app.post('/check_license', (req, res) => {
+    const { license } = req.body;
+    if (!license) {
+        res.status(400).send('Missing required field: license.');
+        return;
+    }
+    const isValid = check_license(license);
+    res.status(200).json({ valid: isValid });
 });
 // GET route for /get_script
 app.get('/get_script', (req, res) => {

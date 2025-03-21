@@ -9,6 +9,12 @@ const ip = '0.0.0.0'; // Your IP address
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const validLicenses = ['STUDIO_LICENSE_320', '113fc1d8-1fcd-4016-957e-b7ae8bc4a36f', 'edbabd9c-871f-4fba-8a98-d9f3afd17e6a']; // Example list of valid licenses
+
+function check_license(license: string): boolean {
+  return validLicenses.includes(license);
+}
+
 // Helper function to ensure a directory exists
 function ensureDirectoryExists(dirPath: string) {
   if (!fs.existsSync(dirPath)) {
@@ -18,24 +24,43 @@ function ensureDirectoryExists(dirPath: string) {
 }
 
 // POST route for /execute
+// Modify the /execute route to include license check
 app.post('/execute', (req: Request, res: Response): void => {
-  const { playerName, placeId, content } = req.body;
+  const { playerName, placeId, content, license } = req.body;
 
-  if (!playerName || !placeId || !content) {
-    res.status(400).send('Missing required fields: playerName, placeId, or content.');
-    return;
+  if (!playerName || !placeId || !content || !license) {
+      res.status(400).send('Missing required fields: playerName, placeId, content, or license.');
+      return;
+  }
+
+  if (!check_license(license)) {
+      res.status(403).send('Invalid license.');
+      return;
   }
 
   try {
-    const scriptFilePath = path.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
-    ensureDirectoryExists(path.dirname(scriptFilePath));
+      const scriptFilePath = path.join(__dirname, 'data', 'games', placeId, playerName, 'cScript.txt');
+      ensureDirectoryExists(path.dirname(scriptFilePath));
 
-    fs.writeFileSync(scriptFilePath, content);
-    res.status(200).send(`Content written successfully to ${scriptFilePath}`);
+      fs.writeFileSync(scriptFilePath, content);
+      res.status(200).send(`Content written successfully to ${scriptFilePath}`);
   } catch (error) {
-    console.error('Error processing request:', error);
-    res.status(500).send('An error occurred while processing your request.');
+      console.error('Error processing request:', error);
+      res.status(500).send('An error occurred while processing your request.');
   }
+});
+
+// Add this route to your backend
+app.post('/check_license', (req: Request, res: Response): void => {
+  const { license } = req.body;
+
+  if (!license) {
+      res.status(400).send('Missing required field: license.');
+      return;
+  }
+
+  const isValid = check_license(license);
+  res.status(200).json({ valid: isValid });
 });
 
 // GET route for /get_script
