@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Script Executor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-inter">
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-400">secret lgima panel ultimate 42</h1>
+        
+        <div id="loginForm" class="bg-gray-800 rounded-lg p-6 shadow-lg mb-6 fade-in">
+            <input type="text" id="usernameInput" placeholder="Enter your Roblox username" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+            <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Login</button>
+        </div>
+
+        <div id="executorPanel" class="hidden bg-gray-800 rounded-lg p-6 shadow-lg fade-in">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-300">codebox</h2>
+            <div id="editor" class="w-full h-64 bg-gray-700 rounded-md mb-4"></div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="executeScript()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Execute</button>
+                <button onclick="clearEditor()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Clear</button>
+                <button onclick="openFile()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Open File</button>
+                <button onclick="saveFile()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Save File</button>
+                <button onclick="showAttachModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+            </div>
+        </div>
+
+        <div id="attachModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                <h3 class="text-xl font-semibold mb-4 text-blue-300">Attach to Game</h3>
+                <input type="text" id="gameIdInput" placeholder="Enter Game ID" class="w-full bg-gray-700 text-white rounded-md p-2 mb-3 focus:ring-2 focus:ring-blue-400 transition-all duration-200">
+                <div class="flex justify-end gap-2">
+                    <button onclick="hideAttachModal()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Cancel</button>
+                    <button onclick="attachToGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Attach</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editor;
+        let currentUsername = localStorage.getItem('robloxUsername');
+        let currentGameId = localStorage.getItem('currentGameId');
+
+        window.onload = function() {
+            editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/lua");
+
+            if (currentUsername) {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('executorPanel').classList.remove('hidden');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
+                localStorage.setItem('robloxUsername', username);
+                currentUsername = username;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('executorPanel').classList.remove('hidden');
+            }
+        }
+
+        function executeScript() {
+            if (!currentUsername || !currentGameId) {
+                alert('Please log in and attach to a game first.');
+                return;
+            }
+
+            const content = editor.getValue();
+            fetch('/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playerName: currentUsername,
+                    placeId: currentGameId,
+                    content: content
+                }),
+            })
+            .then(response => response.text())
+            .then(result => alert(result))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function clearEditor() {
+            editor.setValue('');
+        }
+
+        function openFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = readerEvent => {
+                    const content = readerEvent.target.result;
+                    editor.setValue(content);
+                }
+            }
+            input.click();
+        }
+
+        function saveFile() {
+            const content = editor.getValue();
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'script.lua';
+            a.click();
+        }
+
+        function showAttachModal() {
+            document.getElementById('attachModal').classList.remove('hidden');
+        }
+
+        function hideAttachModal() {
+            document.getElementById('attachModal').classList.add('hidden');
+        }
+
+        function attachToGame() {
+            const gameId = document.getElementById('gameIdInput').value.trim();
+            if (gameId) {
+                fetch('/create_game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ placeId: gameId }),
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    localStorage.setItem('currentGameId', gameId);
+                    currentGameId = gameId;
+                    hideAttachModal();
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>

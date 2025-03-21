@@ -1,0 +1,27 @@
+{
+  "name": "executor",
+  "version": "1.0.0",
+  "main": "main.js",
+"scripts": {
+  "build": "tsc",
+  "start": "node dist/main.js",
+  "dev": "ts-node src/main.ts"
+},
+
+"engines": {
+  "node": "14.x"
+},
+
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "typescript": "^5.8.2"
+  }
+}
