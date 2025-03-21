@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const port = 5038;
+const PORT = 5038;
 const ip = '192.168.178.52'; // Your IP address
 
 app.use(express.json());
@@ -108,6 +108,6 @@ app.get('/panel', (req: Request, res: Response) => {
 });
 
 // Start the server
-app.listen(port, ip, () => {
-  console.log(`Server running at http://${ip}:${port}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on port ${PORT}`);
 });
