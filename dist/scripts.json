@@ -3,6 +3,35 @@
     "title": "Infinite Yield",
     "description": "Basic infinite yield script",
     "script": "require(13716575182)('UsernameHere')"
+  },
+  {
+    "title": "Artillery 7.5",
+    "description": "Big gun, by yours truly <3",
+    "script": "require(109009789420220).load(7.5, 'UsernameHere')"
+  },
+  {
+    "title": "Sensation",
+    "description": "The best script hub, dozens of scripts for many categories.",
+    "script": " require(100263845596551)('UsernameHere', ColorSequence.new(Color3.fromRGB(71, 148, 253), Color3.fromRGB(71, 253, 160)), 'Standard')"
+  },
+
+  {
+    "title": "Goner",
+    "description": "Scary killer guy",
+    "script": "require(4513235536).G('UsernameHere')"
+  },
+  {
+    "title": "Noot noot",
+    "description": "Server destroyer ft. Penguin",
+    "script": "require(5034863407).subtosyntax64('UsernameHere')"
+  },
+  {
+    "title": "Sugma",
+    "description": "Very cool script hub",
+    "script": "require(11183244198):s('sugma', game.Players.UsernameHere)"
   }
+
+  
+
 
 ]
